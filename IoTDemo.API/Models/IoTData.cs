@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,8 +11,11 @@ namespace IoTDemo.API.Models
     {
         [Key]
         public int Id { get; set; }
-        public DateTime Date { get; set; }
-        public int NameId { get; set; }
+        
+        public DateTime Date { get; set; }        
+        public int IoTDataNameId { get; set; }
+        [ForeignKey("IoTDataNameId")]
+        public virtual IoTDataName IoTDataName { get; set; }
         public float Value { get; set; }
     }
 }

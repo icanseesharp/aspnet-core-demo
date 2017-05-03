@@ -9,6 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using IoTDemo.API.Models;
+using IoTDemo.API.Data;
 
 namespace IoTDemo.API
 {
@@ -33,7 +34,7 @@ namespace IoTDemo.API
             services.AddMvc();                      
 
             services.AddDbContext<IoTDemoDbContext>(options =>
-                    options.UseSqlServer(Configuration.GetConnectionString("IoTDemoDbContext")));
+                    options.UseSqlServer(Configuration.GetConnectionString("IoTDemoDbContext")));            
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -43,6 +44,7 @@ namespace IoTDemo.API
             loggerFactory.AddDebug();
 
             app.UseMvc();
+            SeedData.Initialize(app.ApplicationServices);
         }
     }
 }

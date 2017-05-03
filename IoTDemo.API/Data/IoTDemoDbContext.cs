@@ -13,6 +13,8 @@ namespace IoTDemo.API.Models
         {
         }
 
-        public DbSet<IoTDemo.API.Models.IoTData> IoTData { get; set; }
+        public DbSet<IoTData> IoTData { get; set; }
+        public DbSet<IoTDataName> IoTDataNames { get; set; }
+        public DbSet<IoTKey> IoTKeys { get; set; }
     }
 }

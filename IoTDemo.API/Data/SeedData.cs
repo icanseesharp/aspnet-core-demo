@@ -15,34 +15,69 @@ namespace IoTDemo.API.Data
             using (var context = new IoTDemoDbContext(
              serviceProvider.GetRequiredService<DbContextOptions<IoTDemoDbContext>>()))
             {
-                // Look for any movies.
+                // Look for any previous data.
                 if (context.IoTData.Any())
                 {
                     return;   // DB has been seeded
                 }
+                #region Add IoTKeys                
+                var key1 =context.IoTKeys.Add(new IoTKey {
+                    
+                    Key = new Guid(),
+                    User = "site-admin",
+                    Enabled = true,
+                });
 
+                var key2 = context.IoTKeys.Add(new IoTKey
+                {                    
+                    Key = new Guid(),
+                    User = "web-admin",
+                    Enabled = true,
+                });
+                
+                #endregion Add IoTKeys
+
+                #region Add IoTNames                
+                var name1 = context.IoTDataNames.Add(new IoTDataName {
+                    
+                    Name = "temperature",
+                    IoTKeyId = key1.Entity.Id                                      
+                });
+
+                var name2 = context.IoTDataNames.Add(new IoTDataName
+                {                    
+                    Name = "temperature",
+                    IoTKeyId = key2.Entity.Id                    
+                });
+                
+                #endregion Add IoTNames
+
+                #region Add IoTData                
                 context.IoTData.AddRange(
                      new IoTData
-                     {
-                         
+                     {                         
+                         Date = DateTime.Now,
+                         IoTDataNameId = name1.Entity.Id,                       
+                         Value = 18.5f
                      },
 
                      new IoTData
-                     {
-                         
+                     {                         
+                         Date = DateTime.Now,
+                         IoTDataNameId = name1.Entity.Id,                         
+                         Value = 19.6f
                      },
 
                      new IoTData
-                     {
-                         
-                     },
-
-                   new IoTData
-                   {
-                       
-                   }
+                     {                         
+                         Date = DateTime.Now,
+                         IoTDataNameId = name2.Entity.Id,                         
+                         Value = 3.14f
+                     }
                 );
-                context.SaveChanges();
+                #endregion Add IoTData                
+
+                context.SaveChanges();                
             }
         }
     }

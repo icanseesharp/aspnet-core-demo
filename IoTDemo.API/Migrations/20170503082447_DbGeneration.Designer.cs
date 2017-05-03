@@ -8,9 +8,10 @@ using IoTDemo.API.Models;
 namespace IoTDemo.API.Migrations
 {
     [DbContext(typeof(IoTDemoDbContext))]
-    partial class IoTDemoDbContextModelSnapshot : ModelSnapshot
+    [Migration("20170503082447_DbGeneration")]
+    partial class DbGeneration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.1.1")
