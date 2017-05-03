@@ -9,8 +9,7 @@ using IoTDemo.API.Models;
 
 namespace IoTDemo.API.Controllers
 {
-    [Produces("application/json")]
-    [Route("api/IoTData")]
+    [Produces("application/json")]    
     public class IoTDataController : Controller
     {
         private readonly IoTDemoDbContext _context;
@@ -19,17 +18,18 @@ namespace IoTDemo.API.Controllers
         {
             _context = context;
         }
-
-        // GET: api/IoTData
+        
+        //GET: iotdata/getall
         [HttpGet]
+        [Route("[Controller]/GetAll")]
         public IEnumerable<IoTData> GetIoTData()
         {
             return _context.IoTData;
         }
-
-        // GET: api/IoTData/5
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetIoTData([FromRoute] int id)
+        
+        //GET: iotdata/get?id={Id}
+        [Route("[Controller]/Get")]
+        public async Task<IActionResult> GetIoTData(int id)
         {
             if (!ModelState.IsValid)
             {
@@ -44,45 +44,11 @@ namespace IoTDemo.API.Controllers
             }
 
             return Ok(ioTData);
-        }
+        }        
 
-        // PUT: api/IoTData/5
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutIoTData([FromRoute] int id, [FromBody] IoTData ioTData)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            if (id != ioTData.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(ioTData).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IoTDataExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/IoTData
-        [HttpPost]        
+        // POST: iotdata/write
+        [HttpPost]
+        [Route("[Controller]/write")]
         public async Task<IActionResult> PostIoTData(string name, string value, string date,string key)
         {
 
@@ -155,9 +121,10 @@ namespace IoTDemo.API.Controllers
             return CreatedAtAction("GetIoTData", new { id = ioTData.Id }, ioTData);
         }
 
-        // DELETE: api/IoTData/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIoTData([FromRoute] int id)
+        // DELETE: iotdata/delete?id={Id}
+        [HttpDelete]
+        [Route("[Controller]/delete")]
+        public async Task<IActionResult> DeleteIoTData(int id)
         {
             if (!ModelState.IsValid)
             {
