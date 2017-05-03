@@ -82,10 +82,68 @@ namespace IoTDemo.API.Controllers
         }
 
         // POST: api/IoTData
-        [HttpPost]
-        public async Task<IActionResult> PostIoTData([FromBody] IoTData ioTData)
+        [HttpPost]        
+        public async Task<IActionResult> PostIoTData(string name, string value, string date,string key)
         {
-            Console.WriteLine(DateTime.Now);
+
+            #region check if the key is provided and valid
+            var isValidKey = string.IsNullOrEmpty(key) ? false : _context.IoTKeys.Where(q => q.Key.ToString().ToLowerInvariant() == key).Count() > 0 ? true : false;          
+            if(!isValidKey)
+            {
+                return Unauthorized();
+            }
+            #endregion
+
+            var ioTData = new IoTData();            
+
+            #region validate the provided data
+
+            var existingName = string.IsNullOrEmpty(name) ? false : _context.IoTDataNames.Where(q=>q.Name.ToLowerInvariant() == name.ToLowerInvariant()).Count() > 0 ? true : false ;
+            if(existingName)
+            {
+                ioTData.IoTDataNameId = _context.IoTDataNames.Where(q => q.Name.ToLowerInvariant() == name.ToLowerInvariant()).First().Id;
+            }
+            else
+            {
+                var newIotDataName = _context.Add(new IoTDataName() {
+                    Name = name,
+                    IoTKeyId = _context.IoTKeys.Where(q=>q.Key == Guid.Parse(key)).First().Id
+                });
+                ioTData.IoTDataNameId = newIotDataName.Entity.Id;
+            }
+
+            var ParsedDate = new DateTime();
+            if (string.IsNullOrEmpty(date))
+            {
+                ioTData.Date = DateTime.Now;
+            }
+            else if (DateTime.TryParse(date, out ParsedDate))
+            {
+                ioTData.Date = ParsedDate;                
+            }
+            else
+            {
+                return BadRequest("Provided date is invalid, please check the date!");
+            }
+            
+
+
+            if(string.IsNullOrEmpty(value))
+            {
+                return BadRequest("Please provide a floating point value");
+            }
+            var ioTValue = new float();
+            if(float.TryParse(value, out ioTValue))
+            {
+                ioTData.Value = ioTValue;
+            }
+            else
+            {
+                return BadRequest("Value provided is not a valid floating point number");
+            }
+            #endregion
+
+            
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);

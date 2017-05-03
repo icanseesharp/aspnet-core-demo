@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,7 +13,7 @@ namespace IoTDemo.API.Models
     {
         [Key]
         public int Id { get; set; }
-        
+        [JsonProperty(ItemConverterType = typeof(JavaScriptDateTimeConverter))]
         public DateTime Date { get; set; }        
         public int IoTDataNameId { get; set; }
         [ForeignKey("IoTDataNameId")]

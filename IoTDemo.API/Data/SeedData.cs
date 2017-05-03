@@ -23,14 +23,14 @@ namespace IoTDemo.API.Data
                 #region Add IoTKeys                
                 var key1 =context.IoTKeys.Add(new IoTKey {
                     
-                    Key = new Guid(),
+                    Key = Guid.NewGuid(),
                     User = "site-admin",
                     Enabled = true,
                 });
 
                 var key2 = context.IoTKeys.Add(new IoTKey
                 {                    
-                    Key = new Guid(),
+                    Key =  Guid.NewGuid(),
                     User = "web-admin",
                     Enabled = true,
                 });
