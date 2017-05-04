@@ -59,7 +59,7 @@ namespace IoTDemo.API.Controllers
             #region check if the key is provided and valid             
             if (!IsValidKey(key))
             {
-                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, could not auhtenticate the user with given key"));
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, could not auhtenticate the user with given key - The key is either invalid or disabled"));
             }
             #endregion
 
@@ -163,7 +163,7 @@ namespace IoTDemo.API.Controllers
 
         private bool IsValidKey(string key)
         {
-            return string.IsNullOrEmpty(key) ? false : _context.IoTKeys.Where(q => q.Key.ToString().ToLowerInvariant() == key).Count() > 0 ? true : false;
+            return string.IsNullOrEmpty(key) ? false : (_context.IoTKeys.Where(q => q.Key.ToString().ToLowerInvariant() == key && q.Enabled ).Count() > 0)? true : false;
         }
     }
 }
