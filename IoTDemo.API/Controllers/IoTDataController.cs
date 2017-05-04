@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IoTDemo.API.Models;
+using System.Net;
 
 namespace IoTDemo.API.Controllers
 {
@@ -33,7 +34,7 @@ namespace IoTDemo.API.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a valid integer Id to get the record"));
             }
 
             var ioTData = await _context.IoTData.SingleOrDefaultAsync(m => m.Id == id);
@@ -54,7 +55,7 @@ namespace IoTDemo.API.Controllers
             #region check if the key is provided and valid             
             if (!IsValidKey(key))
             {
-                return Unauthorized();
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, could not auhtenticate the user with given key"));
             }
             #endregion
 
@@ -67,7 +68,7 @@ namespace IoTDemo.API.Controllers
             {
                 ioTData.IoTDataNameId = _context.IoTDataNames.Where(q => q.Name.ToLowerInvariant() == name.ToLowerInvariant()).First().Id;
             }
-            else
+            else if(!string.IsNullOrEmpty(name))
             {
                 var newIotDataName = _context.Add(new IoTDataName()
                 {
@@ -75,6 +76,11 @@ namespace IoTDemo.API.Controllers
                     IoTKeyId = _context.IoTKeys.Where(q => q.Key == Guid.Parse(key)).First().Id
                 });
                 ioTData.IoTDataNameId = newIotDataName.Entity.Id;
+            }
+
+            else
+            {
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, name field was not provided or was empty"));
             }
 
             var ParsedDate = new DateTime();
@@ -88,14 +94,16 @@ namespace IoTDemo.API.Controllers
             }
             else
             {
-                return BadRequest("Provided date is invalid, please check the date!");
+                //return BadRequest("Provided date is invalid, please check the date!");
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Provided date is invalid, please check the date"));
             }
 
 
 
             if (string.IsNullOrEmpty(value))
             {
-                return BadRequest("Please provide a floating point value");
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a mandatory floating point value"));
+                //return BadRequest("Please provide a floating point value");
             }
             var ioTValue = new float();
             if (float.TryParse(value, out ioTValue))
@@ -104,7 +112,8 @@ namespace IoTDemo.API.Controllers
             }
             else
             {
-                return BadRequest("Value provided is not a valid floating point number");
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Provided Value is not a valid floating point number"));
+                //return BadRequest("Value provided is not a valid floating point number");
             }
             #endregion
 
@@ -127,11 +136,11 @@ namespace IoTDemo.API.Controllers
         {
             if(!IsValidKey(key))
             {
-                return Unauthorized();
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, could not auhtenticate the user with given key"));
             }
             if (!ModelState.IsValid)
             {
-                return BadRequest(ModelState);
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a valid integer Id to delete the record"));
             }
 
             var ioTData = await _context.IoTData.SingleOrDefaultAsync(m => m.Id == id);
