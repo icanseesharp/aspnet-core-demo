@@ -41,7 +41,8 @@ namespace IoTDemo.API
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
-            loggerFactory.AddDebug();
+            //loggerFactory.AddDebug();
+            loggerFactory.AddFile("Logs/IoT-{Date}.log");
 
             app.UseMvc();
             SeedData.Initialize(app.ApplicationServices);

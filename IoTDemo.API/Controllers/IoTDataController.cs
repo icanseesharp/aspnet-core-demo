@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IoTDemo.API.Models;
 using System.Net;
+using Microsoft.Extensions.Logging;
 
 namespace IoTDemo.API.Controllers
 {
@@ -14,10 +15,12 @@ namespace IoTDemo.API.Controllers
     public class IoTDataController : Controller
     {
         private readonly IoTDemoDbContext _context;
+        readonly ILogger<IoTDataController> _log;
 
-        public IoTDataController(IoTDemoDbContext context)
+        public IoTDataController(IoTDemoDbContext context, ILogger<IoTDataController> log)
         {
             _context = context;
+            _log = log;
         }
         
         //GET: iotdata/getall
@@ -34,6 +37,7 @@ namespace IoTDemo.API.Controllers
         {
             if (!ModelState.IsValid)
             {
+                _log.LogWarning(string.Format("Invalid Id provided by user, provided value {0}", id.ToString()));
                 return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a valid integer Id to get the record"));
             }
 
@@ -93,8 +97,7 @@ namespace IoTDemo.API.Controllers
                 ioTData.Date = ParsedDate;
             }
             else
-            {
-                //return BadRequest("Provided date is invalid, please check the date!");
+            {                
                 return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Provided date is invalid, please check the date"));
             }
 
@@ -102,8 +105,7 @@ namespace IoTDemo.API.Controllers
 
             if (string.IsNullOrEmpty(value))
             {
-                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a mandatory floating point value"));
-                //return BadRequest("Please provide a floating point value");
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Please provide a mandatory floating point value"));                
             }
             var ioTValue = new float();
             if (float.TryParse(value, out ioTValue))
@@ -112,8 +114,7 @@ namespace IoTDemo.API.Controllers
             }
             else
             {
-                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Provided Value is not a valid floating point number"));
-                //return BadRequest("Value provided is not a valid floating point number");
+                return new BadRequestObjectResult(new BadRequestResultModel("Operation failed, Provided Value is not a valid floating point number"));                
             }
             #endregion
 
