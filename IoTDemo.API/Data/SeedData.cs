@@ -15,6 +15,7 @@ namespace IoTDemo.API.Data
             using (var context = new IoTDemoDbContext(
              serviceProvider.GetRequiredService<DbContextOptions<IoTDemoDbContext>>()))
             {
+                context.Database.EnsureCreated();
                 // Look for any previous data.
                 if (context.IoTData.Any())
                 {
