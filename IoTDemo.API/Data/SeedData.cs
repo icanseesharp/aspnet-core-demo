@@ -47,7 +47,7 @@ namespace IoTDemo.API.Data
 
                 var name2 = context.IoTDataNames.Add(new IoTDataName
                 {                    
-                    Name = "temperature",
+                    Name = "voltage",
                     IoTKeyId = key2.Entity.Id                    
                 });
                 
