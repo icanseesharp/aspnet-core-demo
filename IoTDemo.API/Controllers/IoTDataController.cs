@@ -240,7 +240,7 @@ namespace IoTDemo.API.Controllers
 
         private bool IsValidKey(string key)
         {
-            return string.IsNullOrEmpty(key) ? false : (_context.IoTKeys.Where(q => q.Key.ToString().ToLowerInvariant() == key && q.Enabled ).Count() > 0)? true : false;
+            return string.IsNullOrEmpty(key) ? false : (_context.IoTKeys.Where(q => q.Key.ToString().ToLowerInvariant() == key.ToLowerInvariant() && q.Enabled ).Count() > 0)? true : false;
         }
     }
 }
